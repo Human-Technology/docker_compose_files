@@ -1,0 +1,27 @@
+------
+services:
+  db:
+    image: mysql
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PASSWORD_MYSQL}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ${PATH_TO_APPDATA}/mysql/database:/var/lib/mysql
+    restart: always
+    
+  phpmyadmin:
+    image: lscr.io/linuxserver/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      - PUID=${APPUSER_PUID}
+      - PGID=${APPUSER_PGID}
+      - TZ=${TIME_ZONE_VALUE}
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db # esto debe coincidir con el nombre del servicio de base de datos (db)
+    volumes:
+      - ${PATH_TO_APPDATA}/phpmyadmin/config:/config
+    ports:
+      - 8081:80
+    restart: unless-stopped
